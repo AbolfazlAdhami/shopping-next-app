@@ -7,12 +7,23 @@ import Layout from "@/components/Layout";
 
 import db from "@/util/db";
 import Product from "@/models/productModel";
+import { toast } from "react-toastify";
 
 function CartPage({ productsList }) {
   const { state, dispatch } = useContext(contextApi);
   let totalPrice = 0;
   const { cart } = state;
   const { push } = useRouter();
+  const addHandler = (product) => {
+    const itemQuantity = state.cart.cartItmes.find((item) => item.id === product.id)?.quantity;
+    if (itemQuantity == product) {
+      alert("this Product Not found in Stock");
+      return;
+    }
+
+    dispatch({ type: "ADD_ITEM", payload: product.id });
+    toast.success("Product Added to Cart.");
+  };
 
   return (
     <Layout title={"Cart Shopping"}>
@@ -33,38 +44,23 @@ function CartPage({ productsList }) {
               </thead>
               <tbody>
                 {cart.cartItmes.map((item) => {
-                  let productDetails = productsList.find(
-                    (product) => product.id == item.id
-                  );
+                  let productDetails = productsList.find((product) => product.id == item.id);
                   totalPrice += productDetails.price * item.quantity;
                   return (
                     <tr key={productDetails.id} className="py-2 border-b">
                       <td className="py-2">
                         <span className="flex gap-2 items-center">
-                          <Image
-                            src={productDetails.image}
-                            alt=""
-                            width={25}
-                            height={25}
-                            className="rounded"
-                          />
+                          <Image src={productDetails.image} alt="" width={25} height={25} className="rounded" />
                           {productDetails.title}
                         </span>
                       </td>
-                      <td className="py-2 text-center">
-                        {productDetails.price} $
-                      </td>
+                      <td className="py-2 text-center">{productDetails.price} $</td>
                       <td className="py-2 text-center">{item.quantity}</td>
                       <td className="py-2 flex justify-evenly items-center">
-                        <button className="px-4 py-2 transition-all ease-linear duration-75 text-center rounded bg-green-400 hover:bg-green-800">
+                        <button className="px-4 py-2 transition-all ease-linear duration-75 text-center rounded bg-green-400 hover:bg-green-800" onClick={() => addHandler(item)}>
                           Add
                         </button>
-                        <button
-                          onClick={() =>
-                            dispatch({ type: "REMOVE_ID", payload: item.id })
-                          }
-                          className="px-4 py-2 transition-all ease-linear duration-75 text-center rounded  bg-red-600 hover:bg-red-800 text-white"
-                        >
+                        <button onClick={() => dispatch({ type: "REMOVE_ID", payload: item.id })} className="px-4 py-2 transition-all ease-linear duration-75 text-center rounded  bg-red-600 hover:bg-red-800 text-white">
                           Remove
                         </button>
                       </td>
@@ -76,10 +72,7 @@ function CartPage({ productsList }) {
           </div>
           <div className="p-5 flex flex-col">
             <div className="pb-5">Total Price: {totalPrice}$</div>
-            <button
-              className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded"
-              onClick={() => push("login?redirect=/shipping")}
-            >
+            <button className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded" onClick={() => push("login?redirect=/shipping")}>
               Checkout
             </button>
           </div>
