@@ -1,7 +1,7 @@
-import CheckoutWizard from "@/components/CheckoutWizard";
-import Layout from "@/components/Layout";
-import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Layout from "@/components/Layout";
+import CheckoutWizard from "@/components/CheckoutWizard";
 
 function ShippingPage() {
   const [activeStep, setActiveStep] = useState(0);
@@ -22,35 +22,22 @@ function ShippingPage() {
     }
   }
   return (
-    <Layout>
+    <Layout title={"Checkout"}>
       <div className="">
         <CheckoutWizard activeStep={activeStep} />
-        <div
-          className={`mt-8 w-full flex items-center ${
-            activeStep > 0 ? "justify-between" : "justify-end"
-          }`}
-        >
+        <div className={`mt-8 w-full flex items-center ${activeStep > 0 ? "justify-between" : "justify-end"}`}>
           {activeStep > 0 ? (
-            <button
-              onClick={() => stepHandler("perv")}
-              className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded"
-            >
+            <button onClick={() => stepHandler("perv")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
               Pervios
             </button>
           ) : null}
           {activeStep < 3 ? (
-            <button
-              onClick={() => stepHandler("next")}
-              className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded"
-            >
+            <button onClick={() => stepHandler("next")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
               {" "}
               Next
             </button>
           ) : (
-            <button className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
-              {" "}
-              Checkout
-            </button>
+            <button className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded"> Checkout</button>
           )}
         </div>
       </div>

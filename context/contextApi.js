@@ -4,9 +4,7 @@ import Cookies from "js-cookie";
 export const contextApi = createContext();
 
 const initState = {
-  cart: Cookies.get("cart")
-    ? JSON.parse(Cookies.get("cart"))
-    : { cartItmes: [], shippingData: {} },
+  cart: Cookies.get("cart") ? JSON.parse(Cookies.get("cart")) : { cartItmes: [], shippingData: {} },
 };
 
 function reducer(state, action) {
@@ -15,13 +13,9 @@ function reducer(state, action) {
   switch (type) {
     case "ADD_ITEM":
       const newItem = payload;
-      const existingItems = state.cart.cartItmes.find(
-        (item) => item.id === newItem
-      );
+      const existingItems = state.cart.cartItmes.find((item) => item.id === newItem);
       let quantity = existingItems ? existingItems.quantity++ : 1;
-      const cartItems = state.cart.cartItmes.filter(
-        (item) => item.id !== newItem
-      );
+      const cartItems = state.cart.cartItmes.filter((item) => item.id !== newItem);
       newCart = [...cartItems, { id: newItem, quantity }];
       Cookies.set("cart", JSON.stringify({ cartItmes: [...newCart] }));
       return { ...state, cart: { cartItmes: [...newCart] } };

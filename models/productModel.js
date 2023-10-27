@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
+
 mongoose.Promise = global.Promise;
 
 const productSchema = new Schema({
@@ -14,7 +15,6 @@ const productSchema = new Schema({
   description: { type: String, require: false },
 });
 
-const Product =
-  mongoose.models.Product || mongoose.model("Product", productSchema);
+const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
 export default Product;

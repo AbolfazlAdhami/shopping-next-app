@@ -9,7 +9,7 @@ function CheckoutWizard({ activeStep = 0 }) {
   const { push } = useRouter();
   const { data: session } = useSession();
 
-  const [] = useForm();
+  // const [] = useForm();
   const shippingData = {
     user: {
       name: session?.user?.name,
@@ -35,7 +35,6 @@ function CheckoutWizard({ activeStep = 0 }) {
       case 1:
         return (
           <>
-            <h3 className="text-lg text-slate-400 ">Type Your Address</h3>
             <Input id={"country"} label={"Country"} type={"text"} />
             <Input id={"city"} label={"City"} type={"text"} />
             <Input id={"street"} label={"Street"} type={"text"} />
@@ -54,7 +53,7 @@ function CheckoutWizard({ activeStep = 0 }) {
           {item}
         </div>
       ))}
-      <form className="w-full flex flex-col gap-5 my-4">
+      <form className="w-full flex flex-col py-2 gap-5 my-4">
         <FormHandler />
       </form>
     </div>
