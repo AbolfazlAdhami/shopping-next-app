@@ -1,44 +1,58 @@
+import React, { useEffect, useState, useContext } from "react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
 import Input from "@/components/input";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-function CheckoutWizard({ activeStep = 0 }) {
+function CheckoutWizard() {
   const title = ["User Data", "Address", "Payment Method", "Place Order"];
+  const [activeStep, setActiveStep] = useState(0);
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm();
   const { push } = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  // const [] = useForm();
-  const shippingData = {
-    user: {
-      name: session?.user?.name,
-      email: session?.user?.email,
-    },
-  };
-  const handedSubmit = () => {
-    if (session?.user) {
-      push("/login");
-      return;
+  useEffect(() => {
+    if (session?.user) setActiveStep(1);
+    if (!session) push("/login");
+  }, [session]);
+
+  function stepHandler(action) {
+    let step = activeStep;
+    switch (action) {
+      case "next":
+        setActiveStep(step + 1);
+        break;
+      case "perv":
+        setActiveStep(step - 1);
+      default:
+        break;
     }
-  };
+  }
+  // useEffect(() => console.log(getValues(["email", "name"])), [activeStep]);
+
+  const onSubmit = (data) => console.log(data);
 
   const FormHandler = () => {
     switch (activeStep) {
       case 0:
         return (
           <>
-            <Input id={"name"} label={"name"} type={"text"} value={shippingData.user.name} />
-            <Input id={"email"} label={"email"} type={"text"} value={shippingData.user.email} />
+            <Input value={session?.user ? session.user?.name : ""} id={"name"} regester={register("name", { required: session?.user?.name ? false : true })} label={"name"} type={"text"} />
+            <Input value={session?.user ? session.user?.email : ""} id={"email"} label={"email"} regester={register("email", { required: session?.user?.email ? false : true })} type={"text"} />
           </>
         );
       case 1:
         return (
           <>
-            <Input id={"country"} label={"Country"} type={"text"} />
-            <Input id={"city"} label={"City"} type={"text"} />
-            <Input id={"street"} label={"Street"} type={"text"} />
-            <Input id={"postal"} label={"Postal Code"} type={"text"} />
+            <Input id={"country"} regester={register("countery", { required: true })} label={"Country"} type={"text"} />
+            <Input id={"city"} label={"City"} regester={register("city", { required: true })} type={"text"} />
+            <Input id={"street"} label={"Street"} regester={register("street", { required: true })} type={"text"} />
+            <Input id={"postal"} label={"Postal Code"} regester={register("postal", { required: true })} type={"text"} />
           </>
         );
       default:
@@ -53,8 +67,26 @@ function CheckoutWizard({ activeStep = 0 }) {
           {item}
         </div>
       ))}
-      <form className="w-full flex flex-col py-2 gap-5 my-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col py-2 gap-5 my-4">
         <FormHandler />
+        <div className={`mt-8 w-full flex items-center ${activeStep > 0 ? "justify-between" : "justify-end"}`}>
+          {activeStep > 0 ? (
+            <button type="button" onClick={() => stepHandler("perv")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
+              Pervios
+            </button>
+          ) : null}
+          {activeStep < 3 ? (
+            <button type="button" onClick={() => stepHandler("next")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
+              {" "}
+              Next
+            </button>
+          ) : (
+            <button type="submit" className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
+              {" "}
+              Checkout
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
