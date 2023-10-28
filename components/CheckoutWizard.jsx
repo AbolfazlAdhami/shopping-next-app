@@ -5,26 +5,39 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { contextApi } from "@/context/contextApi";
 import Cookies from "js-cookie";
+
 function CheckoutWizard() {
   const title = ["User Data", "Address", "Payment Method", "Place Order"];
   const [activeStep, setActiveStep] = useState(0);
-  const { state, dispatch } = useContext(contextApi);
-  const { cart } = state;
-  const { shippingData } = cart;
   const {
     register,
     handleSubmit,
-    getValues,
+    setValue,
     formState: { errors },
   } = useForm();
   const { push } = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
+  // Read Data from contextApi
+  const { state, dispatch } = useContext(contextApi);
+  const { cart } = state;
+  const { shippingData } = cart;
+
+  // Render Cycle
   useEffect(() => {
-    console.log(state);
-    if (session?.user) setActiveStep(1);
-    if (!session) push("/login");
-  }, [session]);
+    console.log(state, session);
+    setValue("name", shippingData?.name || session?.user?.name);
+    setValue("email", shippingData?.email || session?.user?.email);
+    setValue("countery", shippingData?.countery);
+    setValue("city", shippingData?.city);
+    setValue("street", shippingData?.street);
+    setValue("postal", shippingData?.postal);
+  }, []);
+
+  // useEffect(() => {
+  //   if (!session) push("/login");
+  // }, [session]);
+  // Render Cycle
 
   function stepHandler(action) {
     let step = activeStep;
@@ -52,8 +65,8 @@ function CheckoutWizard() {
       case 0:
         return (
           <>
-            <Input value={session?.user ? session.user?.name : ""} id={"name"} regester={register("name", { required: session?.user?.name ? false : true })} label={"name"} type={"text"} />
-            <Input value={session?.user ? session.user?.email : ""} id={"email"} label={"email"} regester={register("email", { required: session?.user?.email ? false : true })} type={"text"} />
+            <Input id={"name"} regester={register("name", { required: true })} label={"name"} type={"text"} />
+            <Input id={"email"} label={"email"} regester={register("email", { required: true })} type={"text"} />
           </>
         );
       case 1:
