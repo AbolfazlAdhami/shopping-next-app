@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import { contextApi } from "@/context/contextApi";
 import Product from "@/models/productModel";
 import db from "@/util/db";
+
 const ProductPage = ({ product }) => {
   const { state, dispatch } = useContext(contextApi);
   const { push } = useRouter();

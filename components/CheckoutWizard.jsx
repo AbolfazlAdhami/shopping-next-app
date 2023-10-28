@@ -3,10 +3,14 @@ import { useSession } from "next-auth/react";
 import Input from "@/components/input";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-
+import { contextApi } from "@/context/contextApi";
+import Cookies from "js-cookie";
 function CheckoutWizard() {
   const title = ["User Data", "Address", "Payment Method", "Place Order"];
   const [activeStep, setActiveStep] = useState(0);
+  const { state, dispatch } = useContext(contextApi);
+  const { cart } = state;
+  const { shippingData } = cart;
   const {
     register,
     handleSubmit,
@@ -17,6 +21,7 @@ function CheckoutWizard() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
+    console.log(state);
     if (session?.user) setActiveStep(1);
     if (!session) push("/login");
   }, [session]);
@@ -33,9 +38,14 @@ function CheckoutWizard() {
         break;
     }
   }
-  // useEffect(() => console.log(getValues(["email", "name"])), [activeStep]);
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    const payload = { ...data };
+    dispatch({ type: "SAVE_SHIPPING_DATA", payload });
+    Cookies.set("cart", JSON.stringify({ ...cart, shippingData }));
+    // push("/payment");
+    console.log(state);
+  };
 
   const FormHandler = () => {
     switch (activeStep) {
