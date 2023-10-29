@@ -7,31 +7,11 @@ import { contextApi } from "@/context/contextApi";
 import Cookies from "js-cookie";
 import { RadioGroup } from "@headlessui/react";
 
-const plans = [
-  {
-    name: "Startup",
-    ram: "12GB",
-    cpus: "6 CPUs",
-    disk: "160 GB SSD disk",
-  },
-  {
-    name: "Business",
-    ram: "16GB",
-    cpus: "8 CPUs",
-    disk: "512 GB SSD disk",
-  },
-  {
-    name: "Enterprise",
-    ram: "32GB",
-    cpus: "12 CPUs",
-    disk: "1024 GB SSD disk",
-  },
-];
-
 function CheckoutWizard() {
-  const [selected, setSelected] = useState(plans[0]);
   const title = ["User Data", "Address", "Payment Method", "Place Order"];
   const [activeStep, setActiveStep] = useState(0);
+  const paymentMethod = ["Geteway", "Offline Payment"];
+  const [selected, setSelected] = useState(paymentMethod[0]);
   const {
     register,
     handleSubmit,
@@ -55,31 +35,19 @@ function CheckoutWizard() {
     setValue("city", shippingData?.city);
     setValue("street", shippingData?.street);
     setValue("postal", shippingData?.postal);
+    setSelected(shippingData.payment);
   }, []);
-
   // Render Cycle
 
-  function stepHandler(action) {
-    let step = activeStep;
-    switch (action) {
-      case "next":
-        setActiveStep(step + 1);
-        break;
-      case "perv":
-        setActiveStep(step - 1);
-      default:
-        break;
-    }
-  }
-
+  // Form Submit
   const onSubmit = (data) => {
-    const payload = { ...data };
+    const payload = { ...data, payment: selected };
     dispatch({ type: "SAVE_SHIPPING_DATA", payload });
     Cookies.set("cart", JSON.stringify({ ...cart, shippingData }));
-    // push("/payment");
-    console.log(state);
+
+    console.log(state, selected);
   };
-  const paymentMethod = ["Geteway", "Offline Payment"];
+
   const FormHandler = () => {
     switch (activeStep) {
       case 0:
@@ -101,15 +69,16 @@ function CheckoutWizard() {
       case 2:
         return (
           <RadioGroup value={selected} onChange={setSelected}>
-            <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
+            <RadioGroup.Label className="sr-only">Payment Method:</RadioGroup.Label>
+            <h2 className="text-slate-100 my-2">Payment Method:</h2>
             <div className="space-y-2">
-              {plans.map((plan) => (
+              {paymentMethod.map((item) => (
                 <RadioGroup.Option
-                  key={plan.name}
-                  value={plan}
+                  key={item}
+                  value={item}
                   className={({ active, checked }) =>
                     `${active ? "ring-2 ring-white/60 ring-offset-2 ring-offset-sky-300" : ""}
-                  ${checked ? "bg-sky-900/75 text-white" : "bg-white"}
+                  ${checked ? "bg-slate-800 text-white" : "bg-white"}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                   }
                 >
@@ -119,14 +88,8 @@ function CheckoutWizard() {
                         <div className="flex items-center">
                           <div className="text-sm">
                             <RadioGroup.Label as="p" className={`font-medium  ${checked ? "text-white" : "text-gray-900"}`}>
-                              {plan.name}
+                              {item}
                             </RadioGroup.Label>
-                            <RadioGroup.Description as="span" className={`inline ${checked ? "text-sky-100" : "text-gray-500"}`}>
-                              <span>
-                                {plan.ram}/{plan.cpus}
-                              </span>{" "}
-                              <span aria-hidden="true">&middot;</span> <span>{plan.disk}</span>
-                            </RadioGroup.Description>
                           </div>
                         </div>
                         {checked && (
@@ -156,14 +119,15 @@ function CheckoutWizard() {
       ))}
       <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col py-2 gap-5 my-4">
         <FormHandler />
+
         <div className={`mt-8 w-full flex items-center ${activeStep > 0 ? "justify-between" : "justify-end"}`}>
           {activeStep > 0 ? (
-            <button type="button" onClick={() => stepHandler("perv")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
+            <button type="button" onClick={() => setActiveStep(activeStep - 1)} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
               Pervios
             </button>
           ) : null}
           {activeStep < 3 ? (
-            <button type="button" onClick={() => stepHandler("next")} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
+            <button type="button" onClick={() => setActiveStep(activeStep + 1)} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
               {" "}
               Next
             </button>
