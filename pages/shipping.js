@@ -11,5 +11,5 @@ function ShippingPage() {
     </Layout>
   );
 }
-
+ShippingPage.auth = true;
 export default ShippingPage;
