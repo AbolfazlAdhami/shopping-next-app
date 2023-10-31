@@ -33,54 +33,31 @@ function Layout({ children, title }) {
             <Link href="/" className="text-xl font-bold">
               Shopping
             </Link>
-            <nav className=" ">
-              <Link
-                href="/cart"
-                className="p-2 text-gray-300 transition-all ease-in text-lg font-medium hover:text-gray-50 relative"
-              >
-                {cartCount > 0 && (
-                  <span className="absolute top-0 right-0  text-center w-4 h-4 rounded-full text-xs bg-slate-950 text-green-400 hover:bg-slate-500">
-                    {cartCount}
-                  </span>
-                )}
+            <nav className="">
+              <Link href="/cart" className="p-2 mx-2 text-gray-300 transition-all ease-in text-lg font-medium hover:text-gray-50 relative">
+                {cartCount > 0 && <span className="absolute top-0 right-0  text-center w-4 h-4 rounded-full text-xs bg-slate-950 text-green-400 hover:bg-slate-500">{cartCount}</span>}
                 Cart
               </Link>
               {status == "loading" ? (
                 "Loading..."
               ) : session?.user ? (
                 <Menu className="relative inline-block" as={"div"}>
-                  <Menu.Button className={"text-blue-500  text-lg"}>
-                    {session.user.name}
-                  </Menu.Button>
-                  <Menu.Items
-                    className={
-                      "absolute right-0 w-60 rounded p-4 origin-top-right bg-white border-slate-500"
-                    }
-                  >
+                  <Menu.Button className={"text-blue-500  text-lg"}>{session.user.name}</Menu.Button>
+                  <Menu.Items className={"absolute right-0 w-60 rounded p-4 origin-top-right bg-white border-slate-500"}>
                     <Menu.Item>
-                      <DropDown
-                        className="flex p-2 text-black"
-                        href={"/profile"}
-                      >
+                      <DropDown className="flex p-2 text-black" href={"/profile"}>
                         Profile
                       </DropDown>
                     </Menu.Item>
                     <Menu.Item>
-                      <a
-                        className="flex p-2 text-black"
-                        href={"#"}
-                        onClick={logoutHandler}
-                      >
+                      <a className="flex p-2 text-black" href={"#"} onClick={logoutHandler}>
                         Logout
                       </a>
                     </Menu.Item>
                   </Menu.Items>
                 </Menu>
               ) : (
-                <Link
-                  href="/login"
-                  className="p-2 text-gray-300 transition-all ease-in text-lg font-medium hover:text-gray-50"
-                >
+                <Link href="/login" className="p-2 text-gray-300 transition-all ease-in text-lg font-medium hover:text-gray-50">
                   Login
                 </Link>
               )}
@@ -90,19 +67,7 @@ function Layout({ children, title }) {
         <main className="container mx-auto mt-4 px-4">{children}</main>
         <footer className="bg-slate-400 w-full p-4">Footer</footer>
       </div>
-      <ToastContainer
-        position="bottom-right"
-        limit={3}
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+      <ToastContainer position="bottom-right" limit={3} autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
     </>
   );
 }

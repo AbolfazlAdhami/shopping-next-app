@@ -35,7 +35,7 @@ function CheckoutWizard() {
     setValue("city", shippingData?.city);
     setValue("street", shippingData?.street);
     setValue("postal", shippingData?.postal);
-    setSelected(shippingData.payment);
+    setSelected(shippingData?.payment);
   }, []);
   // Render Cycle
 
@@ -78,7 +78,7 @@ function CheckoutWizard() {
                   value={item}
                   className={({ active, checked }) =>
                     `${active ? "ring-2 ring-white/60 ring-offset-2 ring-offset-sky-300" : ""}
-                  ${checked ? "bg-slate-800 text-white" : "bg-white"}
+                  ${checked ? "bg-slate-800 text-white" : "bg-gray-400"}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                   }
                 >
@@ -87,7 +87,7 @@ function CheckoutWizard() {
                       <div className="flex w-full items-center justify-between">
                         <div className="flex items-center">
                           <div className="text-sm">
-                            <RadioGroup.Label as="p" className={`font-medium  ${checked ? "text-white" : "text-gray-900"}`}>
+                            <RadioGroup.Label as="p" className={`font-medium    ${checked ? "text-white" : "text-slate-950"}`}>
                               {item}
                             </RadioGroup.Label>
                           </div>
@@ -117,9 +117,8 @@ function CheckoutWizard() {
           {item}
         </div>
       ))}
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col py-2 gap-5 my-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full  flex flex-col py-2 gap-5 my-4">
         <FormHandler />
-
         <div className={`mt-8 w-full flex items-center ${activeStep > 0 ? "justify-between" : "justify-end"}`}>
           {activeStep > 0 ? (
             <button type="button" onClick={() => setActiveStep(activeStep - 1)} className="px-4 py-2 hover:bg-slate-500 transition-all duration-150 ease-linear bg-slate-800 text-white text-lg rounded">
